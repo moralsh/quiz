@@ -1,5 +1,10 @@
+  <form method="get" action="/quizzes">
+    Filtrar preguntas <p>
+    <input type="text" name="search" value="Texto a filtrar"/>
+    <input type="submit" value="Filtrar">
+  </form>
   <table>
-  <% var i; for (i=0; i < quizzes.length; i++) { %>        
-     <tr><td><a href="quizzes/<%= quizzes[i].id %>"><%= quizzes[i].pregunta %></a></td></tr> 
+  <% var i; for (i=0; i < quizzes.length; i++) { %>
+     <tr><td><a href="quizzes/<%= quizzes[i].id %>"><%= quizzes[i].pregunta %></a></td></tr>
   <% } %>
   </table>

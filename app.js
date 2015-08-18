@@ -41,6 +41,21 @@ app.use(function(req, res, next) {
   next();
 });
 
+// Auto logout
+app.use(function(req, res, next){
+    if (req.session.user) {
+        var expiration = 120000; // Tiempo al que debemos echar al usuario
+        if(!req.session.timeout) { req.session.timeout = Date.now();}
+        if (Date.now() > (req.session.timeout + expiration)) {
+            // Borramos sesión
+            delete req.session.user;
+        }
+        // Actualizamos la sesión, ponemos el contador a cero, basicamente
+        req.session.timeout = Date.now();
+    }
+    next();
+});
+
 app.use('/', routes);
 
 

@@ -1,6 +1,6 @@
 var models = require('../models/models.js');
 
-// Autoload - factoriza el cÃ³digo si ruta incluye :quizId
+// Autoload - factoriza el código si ruta incluye :quizId
 exports.load = function(req, res, next, quizId) {
     models.Quiz.find({
       where: {
@@ -36,6 +36,38 @@ exports.index = function( req, res) {
            }
        ) //.catch(function(error) { next(error);})
    }
+};
+
+// GET quizzes/statistics
+exports.stats = function(req, res) {
+    models.Quiz.findAndCountAll({
+        include: [{
+            model: models.Comment
+        }]
+    }).then(
+        function(quizzes) {
+            // inicializamos
+            var numquiz = quizzes.count;
+            var numcomments = 0;
+            var quiznocomments = 0;
+            // recorremos y rellenamos quizzes
+            for (var i = 0; i < numquiz; i++) {
+                var quizcomments = quizzes.rows[i].toJSON().Comments.length;
+                if ( quizcomments > 0) {
+                    numcomments = numcomments + quizcomments;
+                } else {
+                    quiznocomments++;
+                }
+            }
+            var avgcomment = numcomments / numquiz;
+            // devolvemos la página
+            res.render('quizzes/statistics', { numquiz: numquiz,
+                                               numcomments: numcomments,
+                                               quiznocomments: quiznocomments,
+                                               avgcomment: avgcomment,
+                                               errors: []});
+        }
+    )
 };
 
 // GET quizzes/:id
